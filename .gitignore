@@ -40,3 +40,4 @@ build/
 
 ### Project specific files ###
 test-output/*
+src/test/resources/apps/*
