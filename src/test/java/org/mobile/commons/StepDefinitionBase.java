@@ -19,8 +19,8 @@ abstract public class StepDefinitionBase {
     BasePage page;
     private final ElementUtil elementUtil = new ElementUtil();
 
-    public void iSetThePageAsFrom(String pageName, String path) {
-        PageManager.setPageInstance(pageName, path);
+    public void iSetThePageAsFrom(String pageName) {
+        PageManager.setPageInstance(pageName);
         page = getCurrentPageTL();
     }
 

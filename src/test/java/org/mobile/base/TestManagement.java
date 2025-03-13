@@ -1,12 +1,9 @@
 package org.mobile.base;
 
-import com.aventstack.extentreports.MediaEntityBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
 import io.appium.java_client.AppiumDriver;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mobile.commons.StepDefinitionBase;
 import org.mobile.config.ExtentReportManager;
 import org.mobile.config.TestExecutionConfig;
@@ -18,6 +15,7 @@ import org.mobile.config.LogConfig;
 import static org.mobile.base.DriverManager.getDeviceConfig;
 import static org.mobile.base.DriverManager.parsePlatform;
 import static org.mobile.config.LogConfig.logInfo;
+import static org.mobile.pages.PageMapper.mapPages;
 import static org.mobile.utils.AppiumUtil.isAppRunning;
 
 @ExtendWith(TestResultLogger.class)
@@ -29,11 +27,12 @@ public class TestManagement extends StepDefinitionBase {
 
     @BeforeAll
     public static void projectSetUp() {
+        logInfo("Page Mapping Starting");
+        mapPages();
         logInfo("Configs setting:");
         TestExecutionConfig.initialize();
         ThreadLocalManager.osPlatformTL.set(parsePlatform(ConfigReader.get("platform")));
         logInfo("Tests Starting...");
-
         if (ThreadLocalManager.getIsParallelEnabled()) {
             logInfo("Tests will run parallel. Starting all Appium servers...");
             DevicesConfigReader.getDeviceConfigs().forEach(AppiumServerManager::startServer);
