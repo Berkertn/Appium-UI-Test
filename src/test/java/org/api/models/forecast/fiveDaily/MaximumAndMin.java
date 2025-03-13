@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MaximumAndMin {
     @JsonProperty("Value")
-    private double value;
+    private int value;
     @JsonProperty("Unit")
     private String unit;
     @JsonProperty("UnitType")

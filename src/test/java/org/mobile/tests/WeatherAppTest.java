@@ -20,7 +20,8 @@ public class WeatherAppTest extends TestManagement {
     @Test
     @Order(1)
     @Tag("wip")
-    void testLogin() throws JsonProcessingException {
+    @DisplayName("Weather Five Day Forecast UI and API Test")
+    void weatherFiveDayForecastUIAndAPITest() throws JsonProcessingException {
         String city = "Istanbul";
         String key = getLocationKeyFor(city);
         String dailyForecasts = getResponseForFiveDaysForecast(key);
@@ -39,7 +40,7 @@ public class WeatherAppTest extends TestManagement {
         iWriteIntoElement("locationSearchText", city);
         iWaitToBeVisible("locationResultFirst");
         iTapOnElement("locationResultFirst");
-
+        Assertions.fail("wefsfsdf");
         iSetThePageAsFrom("HomePage", "/");
         iTapOnElement("dailyForecastButton");
 
@@ -54,22 +55,24 @@ public class WeatherAppTest extends TestManagement {
         iSetThePageAsFrom("ForecastDayDetailPage", "/");
         List<String> locatorKeysToSee = List.of(
                 "dateHeaderText",
-                "highestTemperatureText",
+                "highestAndLowestTemperatureText",
                 "weatherPhareIcon",
                 "dayTabButton",
                 "nightTabButton"
         );
+        /// Day tab UI elements and their value check
         iVerifyToSeeElements(locatorKeysToSee);
         iVerifyTextInElement("dateHeaderText", hottestDayAsUIFormat);
+        iVerifyTextInElement("highestAndLowestTemperatureText", String.valueOf(hottestDate.getTemperature().getMaximum().getValue()));
         iVerifyTextInElement("weatherPhareIcon", hottestDate.getDay().getIconPhrase(), "content-desc");
-        // iTapOnElement("dailyForecastButton");
 
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        ///Change the weather day to night tab
+        iTapOnElement("nightTabButton");
+        /// Night tab UI elements and their value check
+        iVerifyToSeeElements(locatorKeysToSee);
+        iVerifyTextInElement("dateHeaderText", hottestDayAsUIFormat);
+        iVerifyTextInElement("highestAndLowestTemperatureText", String.valueOf(hottestDate.getTemperature().getMinimum().getValue()));
+        iVerifyTextInElement("weatherPhareIcon", hottestDate.getNight().getIconPhrase(), "content-desc");
     }
 
 }
