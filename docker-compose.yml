@@ -1,0 +1,29 @@
+services:
+  appium-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: appium-tests
+    privileged: true
+    ports:
+      - "5037:5037"
+    environment:
+      - ANDROID_HOME=/opt/android-sdk-linux
+      - PATH=$PATH:/opt/android-sdk-linux/tools:/opt/android-sdk-linux/platform-tools:/usr/local/bin/appium
+    command: /bin/bash -c "adb start-server && adb connect host.docker.internal:5555 && adb connect host.docker.internal:5557 && tail -f /dev/null"
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins-server
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  jenkins_home:
