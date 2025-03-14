@@ -27,7 +27,6 @@ public class DevicesConfigReader {
 
     static {
         try {
-            RUN_ON_LOCAL = Boolean.parseBoolean(System.getProperty("runOnLocal", "false"));
             List<Path> configFiles = getDeviceConfigFiles();
             for (Path configFile : configFiles) {
                 Properties properties = new Properties();
