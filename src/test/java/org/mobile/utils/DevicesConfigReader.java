@@ -27,6 +27,7 @@ public class DevicesConfigReader {
 
     static {
         try {
+            logInfo("Loading device configs");
             List<Path> configFiles = getDeviceConfigFiles();
             for (Path configFile : configFiles) {
                 Properties properties = new Properties();
@@ -47,6 +48,7 @@ public class DevicesConfigReader {
                     }
                 }
             }
+            logInfo("Device configs loaded successfully:\n [%s]\n".formatted(deviceConfigs));
             if (deviceConfigs.isEmpty()) {
                 throw new RuntimeException("No available devices found in configuration!");
             }

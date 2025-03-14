@@ -13,8 +13,7 @@ import static org.mobile.base.TestManagement.objectMapper;
 
 public class RequestSteps {
 
-    //TODO change to environment variable or parameter from cli
-    public static final String API_KEY = System.getProperty("API_KEY", ConfigReader.get("api_key"));
+    public static final String API_KEY = System.getProperty("api_key", ConfigReader.get("api_key"));
 
     public static String getLocationKeyFor(String city) throws JsonProcessingException {
         String path = ConfigReader.get("api_base_url") + "/locations/v1/cities/search?apikey=%s&q=%s".formatted(API_KEY, city);

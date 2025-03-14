@@ -65,12 +65,11 @@ abstract public class StepDefinitionBase {
         elementUtil.waitForElementToBeVisible(locator, 20);
     }
 
-    public void iVerifyToSeeElement(String key) {
+    public void iVerifyToElement(String key) {
         By locator = page.getLocators().getLocator(key, getOSPlatform());
         try {
             // If element can be found, it means it is on the page
             WebElement element = elementUtil.getElement(locator);
-            String text = element.getAttribute("value");
             logDebug("Element found: [%s]".formatted(locator));
         } catch (Exception e) {
             logError("Element NOT found: [%s]. Error: %s".formatted(locator, e.getMessage()));
@@ -78,7 +77,7 @@ abstract public class StepDefinitionBase {
         }
     }
 
-    public void iVerifyToSeeElement(SoftAssertions softAssert, String key) {
+    public void iVerifyToElement(SoftAssertions softAssert, String key) {
         By locator = page.getLocators().getLocator(key, getOSPlatform());
         try {
             // If element can be found, it means it is on the page
@@ -90,10 +89,10 @@ abstract public class StepDefinitionBase {
         }
     }
 
-    public void iVerifyToSeeElements(List<String> keys) {
+    public void iVerifyToElements(List<String> keys) {
         SoftAssertions softAssert = new SoftAssertions();
         //to check multiple elements with a list of keys
-        keys.forEach(key -> iVerifyToSeeElement(softAssert, key));
+        keys.forEach(key -> iVerifyToElement(softAssert, key));
         softAssert.assertAll();
     }
 
