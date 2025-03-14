@@ -40,7 +40,6 @@ public class WeatherAppTest extends TestManagement {
         iWriteIntoElement("locationSearchText", city);
         iWaitToBeVisible("locationResultFirst");
         iTapOnElement("locationResultFirst");
-        Assertions.fail("wefsfsdf");
         iSetThePageAsFrom("HomePage", "/");
         iTapOnElement("dailyForecastButton");
 

@@ -10,9 +10,7 @@ RUN curl -o platform-tools.zip https://dl.google.com/android/repository/platform
     rm platform-tools.zip && \
     chmod +x /opt/android-sdk-linux/platform-tools/adb
 
-# Güncellenmiş `adb`'yi PATH'e ekle
 ENV PATH="/opt/android-sdk-linux/platform-tools:$PATH"
-
 
 # Install Maven
 RUN wget https://archive.apache.org/dist/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz && \
@@ -25,25 +23,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g appium appium-doctor && \
     appium driver install uiautomator2
-
-# Install Android SDK and fix directory issues
-RUN mkdir -p /opt/android-sdk-linux/cmdline-tools/latest && \
-    curl -o sdk-tools-linux.zip https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip && \
-    unzip -q sdk-tools-linux.zip -d /opt/android-sdk-linux/cmdline-tools/latest/ && \
-    mv /opt/android-sdk-linux/cmdline-tools/latest/cmdline-tools/* /opt/android-sdk-linux/cmdline-tools/latest/ && \
-    rm -rf /opt/android-sdk-linux/cmdline-tools/latest/cmdline-tools sdk-tools-linux.zip
-
-# Set Android SDK environment variables
-ENV ANDROID_HOME=/a/android-sdk-linux
-ENV PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/cmdline-tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/33.0.1:${PATH}"
-
-# Make sdkmanager executable
-RUN chmod +x /opt/android-sdk-linux/cmdline-tools/latest/bin/sdkmanager
-
-# Accept Android SDK licenses and install required components
-RUN yes | /opt/android-sdk-linux/cmdline-tools/latest/bin/sdkmanager --licenses || true && \
-    /opt/android-sdk-linux/cmdline-tools/latest/bin/sdkmanager --sdk_root=/opt/android-sdk-linux \
-    "platform-tools" "platforms;android-33" "build-tools;33.0.1" "cmdline-tools;latest" "system-images;android-33;google_apis;x86_64" || true
 
 # Copy entrypoint.sh
 COPY entrypoint.sh /entrypoint.sh

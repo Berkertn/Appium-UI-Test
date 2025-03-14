@@ -6,7 +6,7 @@ import lombok.Setter;
 
 public class ThreadLocalManager {
 
-    public static Boolean RUN_ON_LOCAL = Boolean.valueOf(System.getProperty("runOnLocal", "false"));
+    public static boolean RUN_ON_LOCAL = Boolean.parseBoolean(System.getProperty("runOnLocal", "false"));
     @Getter
     @Setter
     public static Boolean isParallelEnabled = false;

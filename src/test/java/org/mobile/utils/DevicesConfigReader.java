@@ -19,6 +19,7 @@ import java.util.Properties;
 import static org.mobile.base.DriverManager.parsePlatform;
 import static org.mobile.base.ThreadLocalManager.RUN_ON_LOCAL;
 import static org.mobile.base.ThreadLocalManager.getOSPlatform;
+import static org.mobile.config.LogConfig.logInfo;
 
 public class DevicesConfigReader {
     @Getter
@@ -26,7 +27,7 @@ public class DevicesConfigReader {
 
     static {
         try {
-            RUN_ON_LOCAL = Boolean.valueOf(System.getProperty("runOnLocal", "false"));
+            RUN_ON_LOCAL = Boolean.parseBoolean(System.getProperty("runOnLocal", "false"));
             List<Path> configFiles = getDeviceConfigFiles();
             for (Path configFile : configFiles) {
                 Properties properties = new Properties();
@@ -59,7 +60,8 @@ public class DevicesConfigReader {
     }
 
     private static List<Path> getDeviceConfigFiles() throws IOException {
-        String fileSuffix = RUN_ON_LOCAL ? "*.local.device.properties" : "*.device.properties";
+        String fileSuffix = RUN_ON_LOCAL ? "*.local.device.properties" : "*.docker.device.properties";
+        logInfo("Searching for device configuration files with suffix: " + fileSuffix);
         List<Path> configFiles = new ArrayList<>();
         URL resource = DevicesConfigReader.class.getClassLoader().getResource("devices");
         if (resource != null) {

@@ -20,7 +20,7 @@ Aşağıdaki komutları sırayla çalıştırarak **iki emülatörü başlat ve 
 
 #### **İlk Emülatörü Aç (Port 5554)**
 ```bash
-emulator -avd Emulator-1 -port 5554 -no-snapshot -no-audio -gpu off -accel off &
+emulator -avd Emulator-1 -port 5554
 ```
 # for no window
 ```bash
@@ -30,7 +30,7 @@ emulator -avd Emulator-2 -port 5556 -no-window -no-audio -gpu off -accel off &
 
 #### **İkinci Emülatörü Aç (Port 5556)**
 ```bash
-emulator -avd Emulator-2 -port 5556 -no-snapshot -no-audio -gpu off -accel off &
+emulator -avd Emulator-2 -port 5556
 ```
 
 #### **ADB Üzerinden TCP Moduna Geçir**
@@ -225,8 +225,13 @@ adb connect 127.0.0.1:5555
 
 ---
 
+***If run is local tests will get the properties only suffix with: "*.local.device.properties"**  
+**If run is docker tests will get the properties only suffix with: "*.docker.device.properties"**
+
+
 **Tests**
 
+#Single Thread run
 ```bash
 mvn test -Djunit.jupiter.execution.parallel.enabled=false
 ```
