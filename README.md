@@ -2,48 +2,48 @@
 
 ## **1. Setup Emulators on Host Machine**
 
-### **1. Init emulators**
+### **1. Initialize Emulators**
 
 1. Open Android Studio
 2. More Actions -> Virtual Device Manager -> Device Manager Page should open
-3. Run the emulator which added in devices folder with properties file
+3. Run the emulator which is added in the devices folder with the properties file
 
 **- Extra:**
 
-- If you want to open the emulator with specific port and cli: (emulator name get from `emulator -list-avds`)
+- If you want to open the emulator with a specific port via CLI: (get emulator name from `emulator -list-avds`)
 
 ```bash
 emulator -avd Emulator-1 -port 5554
 ```
 
-### **2. Check Emulator Up**
+### **2. Check Emulator Status**
 
-1. Check the emulator is up and running with the following command:
+1. Verify that the emulator is up and running with the following command:
 
 ```bash
 adb devices
 ```
 
-2. You should see the following output:
+2. Expected output:
 
-```emulator-5554	device```
+```
+emulator-5554	device
+```
 
-3. Open port for emulator to connect from docker container(5557 is for emulator-5556 that's my second emulator I want to
-   use)
-   ``emulator-5554`` can open with 5555 port by default like emulatorId+1 is port we can use !!
+3. Open the port for the emulator to connect from a Docker container (e.g., 5557 is used for `emulator-5556`):
 
 ```bash
 adb connect 127.0.0.1:5555
 adb connect 127.0.0.1:5557
 ```
 
-4. Check the devices are connected or not with the following command:
+4. Check the connected devices again:
 
-```bash 
+```bash
 adb devices
 ```
 
-5. You should see the following output:
+5. Expected output:
 
 ```
 List of devices attached
@@ -55,7 +55,7 @@ emulator-5554	device
 
 ## **2. Setup & Run Docker Containers**
 
-### **1.Build the Docker Containers**
+### **1. Build the Docker Containers**
 
 ```bash
 docker-compose build --no-cache
@@ -68,16 +68,19 @@ docker-compose up -d
 ```
 
 ### **3. Check the adb device is listed on docker container**
+
 1. Execute following command to get into the container:
 
 ```bash
-docker exec -it appium-tests /bin/bash     
+docker exec -it appium-tests /bin/bash
 ```
+
 2. Check the devices are listed or not with:
 
 ```bash
 adb devices
 ```
+
 3. Expected output:
 
 ```
@@ -85,13 +88,110 @@ root@1955b7137bf0:/workspace# adb devices
 List of devices attached
 host.docker.internal:5555	device
 ```
-4. If not please check the troubleshooting section.
 
-### !! **Troubleshooting**
+4. If the device is not listed, please check the troubleshooting section.
 
-#### **1. Connection Refused in ADB?**
+---
 
-- To be sure emulators created (`emulator -list-avds`)
+## **3. Run Tests**
+
+### **1. Single Thread Run in Local Machine**
+
+```bash
+mvn test -Djunit.jupiter.execution.parallel.enabled=false -DrunOnLocal=true
+```
+
+- it will use the `*.local.device.properties` files
+- it will run the tests in a single thread with tag of "wip" (because wip is default tag in the `pom.xml`)
+
+### **2. Run Tests with Parallel Execution**
+
+```bash
+mvn test \
+    -Djunit.jupiter.execution.parallel.enabled=true \
+    -DrunOnLocal=true \
+    -Djunit.jupiter.execution.parallel.mode.default=concurrent \
+    -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent \
+    -Djunit.jupiter.execution.parallel.config.fixed.parallelism=2
+```
+
+**OR**
+
+```bash
+mvn clean test -DrunOnLocal=true
+```
+(Rest of the values are default in the `junit-platform.properties`)
+
+### **3. Test Run Parameters**
+
+- **`-DapiKey=<your_api_key>`** → Overrides the API key in the config
+- **`-DrunOnLocal=true/false`** → Determines whether the tests run on local or inside Docker (default: `false`, meaning
+  Docker is used)
+  - ``-.local.device.properties`` files are used when `true`, and ``-.docker.device.properties`` files are used when
+    `false`
+- **`-Dtag=<tag_name>`** → Filters test cases based on specified JUnit/Cucumber tags
+
+### **4. Copy Test Output Files**
+
+To manually copy test output files from the Docker container:
+
+```bash
+docker cp appium-tests:/workspace/test-output ./test-output
+```
+
+---
+
+## **4. Device Configuration Details**
+
+### **Local Emulator Configuration** (`emulator.local.device.properties`):
+
+```properties
+deviceName=Emulator-1
+deviceUDID=emulator-5554
+platform=android
+port=4724
+isRealDevice=false
+isOnUse=true
+```
+
+### **Docker Emulator Configurations:**
+
+**First Emulator (`emulator.first.docker.device.properties`):**
+
+```properties
+deviceName=Emulator-1
+deviceUDID=host.docker.internal:5555
+platform=android
+port=4724
+isRealDevice=false
+isOnUse=true
+```
+
+**Second Emulator (`emulator.second.docker.device.properties`):**
+
+```properties
+deviceName=Emulator-2
+deviceUDID=host.docker.internal:5557
+platform=android
+port=4725
+isRealDevice=false
+isOnUse=true
+```
+
+### **How Device Configurations Are Used in Tests**
+
+- If `-DrunOnLocal=true`, the system loads **`*.local.device.properties`** files and only uses devices where
+  `isOnUse=true`.
+- If `-DrunOnLocal=false` (default), the system loads **`*.docker.device.properties`** files and only uses devices where
+  `isOnUse=true`.
+
+---
+
+## **5. Troubleshooting**
+
+### **1. Connection Refused in ADB?**
+
+- Ensure emulators are created (`emulator -list-avds`)
 - Restart ADB and reconnect:
 
 ```bash
@@ -101,24 +201,21 @@ adb connect 127.0.0.1:5555
 adb connect 127.0.0.1:5557
 ```
 
-#### **2. Emulator Can not be found**
+### **2. Emulator Not Found**
 
-1. Connect to Appium Docker
-2. Once the containers are running, open a shell inside `appium-tests` using:
+- Open a shell inside the Docker container:
 
 ```bash
 docker exec -it appium-tests bash
 ```
 
-- When you got into the container check the devices are listed or not with:
+- Check if devices are listed:
 
 ```bash
 adb devices
 ```
 
-- If the no device is listed and in your local machine devices are showing please trigger the following part:
-  `(:5555 is a port which we open from local machine to docker containers if you added with different port please change
-  it. Also, connection command added in entrypoint.sh)`
+- If no device is listed, try reconnecting:
 
 ```bash
 adb connect host.docker.internal:5555
@@ -126,20 +223,23 @@ adb connect host.docker.internal:5557
 adb devices
 ```
 
-**- Expected output:**
+Expected output:
 
 ```
 host.docker.internal:5555    device
-host.docker.internal:5556    device
+host.docker.internal:5557    device
 ```
 
-#### **3. unAuth Error in ADB devices list**
+### **3. Unauthorized Device in ADB**
 
-- When you compose up the docker containers entrypoint.sh will execute connect to emulator and in that time device shows
-  a pop to give permissions. If you can tap to "yes" and check again with ``adb devices`` you can see the auth problem
-  will fix.
+- When the Docker container starts, the device may prompt for authorization.
+- Tap "Yes" on the device and check again:
 
-#### **4. Emulators crashed and restart emulators**
+```bash
+adb devices
+```
+
+### **4. Restarting Crashed Emulators**
 
 ```bash
 adb kill-server
@@ -151,7 +251,7 @@ adb disconnect emulator-5554
 adb devices
 ```
 
-**And to kill emulators**
+To force-kill emulators:
 
 ```bash
 adb -s emulator-5554 emu kill || true
@@ -160,9 +260,9 @@ adb -s 127.0.0.1:5555 emu kill || true
 adb -s 127.0.0.1:5557 emu kill || true
 ```
 
-#### **5. Docker had an error with containers**
-**Docker**
--clean stopped containers etc.
+### **5. Clearing Docker Errors**
+
+To clean up stopped containers and networks:
 
 ```bash
 docker container prune -f
@@ -170,45 +270,3 @@ docker image prune -f
 docker network prune -f
 ```
 
----
-
-## **3.  Run Tests**
-
-If all precondition is done, you can run the tests with jenkins pipeline or manually with the following command:
-
-*Jenkins Pipeline*
-
-1. Create a new pipeline job (you can insert the script from "Jenkinsfile" in the root)
-2. Run the job (Parameters explained below and also in parameter section in pipeline)
-3. Check the test results in the artifacts or console output
-
-
----
-
-***If run is local tests will get the properties only suffix with: "*.local.device.properties"**  
-**If run is docker tests will get the properties only suffix with: "*.docker.device.properties"**
-
-----
-readme'e eklemek istediklerime örnek olarak:
-
-#Single Thread run in Local Machine (test run sadece pipeline'da değil localde olabilir ondan böyle bi section da istedim)
-
-```bash
-mvn test -Djunit.jupiter.execution.parallel.enabled=false
-```
-(bunun gibi bi ton değişimler var projede dosyalarını inceleyerek üretirsen sevinirim.)
-## copy file
-(manuel kopyalamak için kullanılabilir)
-docker cp appium-tests:/workspace/test-output ./test-output
-----
-
-# Test Run with Parallel Execution için gereli olan parmeters ve commandlar
-mvn test -Djunit.jupiter.execution.parallel.enabled=true -DrunOnLocal=true
--Djunit.jupiter.execution.parallel.mode.default=concurrent
--Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
--Djunit.jupiter.execution.parallel.config.fixed.parallelism=2
-
--DapiKey => config de olan api keyi değiştirmek için kullanılır
--DrunOnLocal => localde mi docker da mı calısacağını belirlemek için kullanılır default'u false'dur yani docker'a göre
-ayarlanmıstır
--Dtag => tag for tests to filter
