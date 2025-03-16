@@ -10,10 +10,12 @@ import org.mobile.config.TestExecutionConfig;
 import org.mobile.utils.ConfigReader;
 import org.mobile.utils.DevicesConfigReader;
 import org.mobile.utils.TestResultLogger;
+import org.mobile.config.LogConfig;
 
 import static org.mobile.base.DriverManager.getDeviceConfig;
 import static org.mobile.base.DriverManager.parsePlatform;
 import static org.mobile.config.LogConfig.logInfo;
+import static org.mobile.utils.AppiumUtil.isAppRunning;
 import static org.mobile.utils.FileUtil.cleanTestOutputFolder;
 
 @ExtendWith(TestResultLogger.class)
