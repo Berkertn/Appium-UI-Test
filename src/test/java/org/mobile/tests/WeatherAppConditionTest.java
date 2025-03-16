@@ -14,12 +14,13 @@ public class WeatherAppConditionTest extends TestManagement {
 
     @Test
     @Order(1)
-    @Tag("wip")
-    @DisplayName("Weather Conditions For NY UI and API Test")
+    @Tag("condition")
+    @Tag("smoke")
+    @DisplayName("Weather Current Conditions For NY UI and API Test")
     void weatherConditionsUIAndAPITest() {
         String city = "New York";
         String key = getLocationKeyFor(city);
-        CurrentCondition currentCondition = getFirstResponseOfCurrentCondition(key);
+        CurrentCondition currentCondition = getFirstResponseOfCurrentConditionAsClassInstance(key);
 
         // UI TESTS
         iSetThePageAsFrom("HomePage", "/");

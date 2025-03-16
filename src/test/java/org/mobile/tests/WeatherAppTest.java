@@ -19,7 +19,8 @@ public class WeatherAppTest extends TestManagement {
 
     @Test
     @Order(1)
-    @Tag("wip")
+    @Tag("fiveDay")
+    @Tag("smoke")
     @DisplayName("Weather Five Day Forecast UI and API Test")
     void weatherFiveDayForecastUIAndAPITest() throws JsonProcessingException {
         String city = "Istanbul";
@@ -60,7 +61,7 @@ public class WeatherAppTest extends TestManagement {
                 "nightTabButton"
         );
         /// Day tab UI elements and their value check
-        iVerifyToSeeElements(locatorKeysToSee);
+        iVerifyToElements(locatorKeysToSee);
         iVerifyTextInElement("dateHeaderText", hottestDayAsUIFormat);
         iVerifyTextInElement("highestAndLowestTemperatureText", String.valueOf(hottestDate.getTemperature().getMaximum().getValue()));
         iVerifyTextInElement("weatherPhareIcon", hottestDate.getDay().getIconPhrase(), "content-desc");
@@ -68,7 +69,7 @@ public class WeatherAppTest extends TestManagement {
         ///Change the weather day to night tab
         iTapOnElement("nightTabButton");
         /// Night tab UI elements and their value check
-        iVerifyToSeeElements(locatorKeysToSee);
+        iVerifyToElements(locatorKeysToSee);
         iVerifyTextInElement("dateHeaderText", hottestDayAsUIFormat);
         iVerifyTextInElement("highestAndLowestTemperatureText", String.valueOf(hottestDate.getTemperature().getMinimum().getValue()));
         iVerifyTextInElement("weatherPhareIcon", hottestDate.getNight().getIconPhrase(), "content-desc");
