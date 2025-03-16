@@ -25,7 +25,7 @@ public class ScreenshotUtil {
                 screenshotDir.mkdirs();
             }
             File screenshot = DriverManager.getDriver().getScreenshotAs(OutputType.FILE);
-            logDebug("Screenshot captured [%s]".formatted(screenshot.getAbsolutePath()));
+            logDebug("Screenshot captured for test name of [%s] \nwith absolute path: [%s]".formatted(testName, screenshot.getAbsolutePath()));
             Files.copy(screenshot.toPath(), Paths.get(fileName), StandardCopyOption.REPLACE_EXISTING);
 
             return fileName;

@@ -1,5 +1,6 @@
 package org.mobile.utils.appium;
 
+import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.*;
@@ -32,6 +33,21 @@ public class ElementUtil {
         } catch (Exception e) {
             logError("Element [%s] could not found in [%s]seconds,\nError: %s".formatted(elementBy, timeout, e.getMessage()));
             Assertions.fail("Element [%s] could not found in [%s] seconds,\nError: %s".formatted(elementBy, timeout, e.getMessage()));
+        }
+        return webElement;
+    }
+
+    /// main differences between getElement and this, this one is not fail the tests
+    public WebElement findElement(By elementBy) {
+        int timeout = 5;
+        WebElement webElement = null;
+        try {
+            WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
+            webElement = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(elementBy)
+            );
+            logDebug(String.format("Element [%s] has been found in %s seconds", elementBy, timeout));
+        } catch (Exception ignored) {
         }
         return webElement;
     }
@@ -102,6 +118,26 @@ public class ElementUtil {
     public void scrollToElement(WebElement element) {
         ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
         logDebug("Scrolled to element: " + element);
+    }
+
+    public By getParent(By elementBy) {
+        String xpath = elementBy.toString().replace("By.xpath: ", "");
+        return AppiumBy.xpath(xpath + "/parent::*");
+    }
+
+    public By getChild(By elementBy, int childIndex) {
+        String xpath = elementBy.toString().replace("By.xpath: ", "");
+        return AppiumBy.xpath(xpath + "/child::" + childIndex);
+    }
+
+    public By getFollowingSibling(By elementBy) {
+        String xpath = elementBy.toString().replace("By.xpath: ", "");
+        return AppiumBy.xpath(xpath + "/following-sibling::*");
+    }
+
+    public By getPrecedingSibling(By elementBy) {
+        String xpath = elementBy.toString().replace("By.xpath: ", "");
+        return AppiumBy.xpath(xpath + "/preceding-sibling::*");
     }
 
     public boolean isDisplayed(WebElement element) {

@@ -1,10 +1,12 @@
 package org.mobile.commons;
 
+import io.appium.java_client.AppiumBy;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
 import org.mobile.base.BasePage;
 import org.mobile.base.PageManager;
 import org.mobile.utils.appium.ElementUtil;
+import org.mobile.utils.appium.GesturesUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -14,10 +16,12 @@ import static org.mobile.base.ThreadLocalManager.getCurrentPageTL;
 import static org.mobile.base.ThreadLocalManager.getOSPlatform;
 import static org.mobile.config.LogConfig.logDebug;
 import static org.mobile.config.LogConfig.logError;
+import static org.mobile.utils.StringUtil.formatedStringWithArgs;
 
 abstract public class StepDefinitionBase {
     BasePage page;
     private final ElementUtil elementUtil = new ElementUtil();
+    private final GesturesUtil gesturesUtil = new GesturesUtil();
 
     public void iSetThePageAsFrom(String pageName, String path) {
         PageManager.setPageInstance(pageName, path);
@@ -40,6 +44,34 @@ abstract public class StepDefinitionBase {
         return elementUtil.getElement(locator);
     }
 
+    public WebElement iGetElement(String key, Object... args) {
+        By locator = page.getLocators().getLocator(key, getOSPlatform());
+
+        String locatorString = locator.toString();
+
+        if (locatorString.startsWith("By.xpath: ")) {
+            locatorString = locatorString.replace("By.xpath: ", "");
+            locatorString = formatedStringWithArgs(locatorString, args);
+            locator = AppiumBy.xpath(locatorString);
+        } else if (locatorString.startsWith("By.id: ")) {
+            locatorString = locatorString.replace("By.id: ", "");
+            locatorString = formatedStringWithArgs(locatorString, args);
+            locator = AppiumBy.id(locatorString);
+        } else if (locatorString.startsWith("By.accessibilityId: ")) {
+            locatorString = locatorString.replace("By.accessibilityId: ", "");
+            locatorString = formatedStringWithArgs(locatorString, args);
+            locator = AppiumBy.accessibilityId(locatorString);
+        } else if (locatorString.startsWith("AppiumBy.androidUIAutomator: ")) {
+            logDebug("Dynamic locator returned as: " + locatorString);
+            locatorString = locatorString.replace("AppiumBy.androidUIAutomator: ", "");
+            locatorString = formatedStringWithArgs(locatorString, args);
+            locator = AppiumBy.androidUIAutomator(locatorString);
+        } else {
+            throw new IllegalArgumentException("Unsupported locator type: " + locator);
+        }
+        return elementUtil.getElement(locator);
+    }
+
     public WebElement iGetElementWithDynamicField(String key, String changeableField) {
         By locator = page.getLocators().getLocator(key, getOSPlatform());
         logDebug("Dynamic locator: " + locator);
@@ -58,6 +90,11 @@ abstract public class StepDefinitionBase {
         By locator = page.getLocators().getLocator(key, getOSPlatform());
         WebElement element = elementUtil.getElement(locator);
         elementUtil.sendEnter(element);
+    }
+
+    public void iScrollToElement(String key) {
+        By locator = page.getLocators().getLocator(key, getOSPlatform());
+        gesturesUtil.scrollToElement(locator);
     }
 
     public void iWaitToBeVisible(String key) {
@@ -134,5 +171,4 @@ abstract public class StepDefinitionBase {
         Assertions.assertEquals(expectedText, actualText,
                 String.format("Element [%s] text mismatch for attribute [%s]!", locator, attributeKey));
     }
-
 }
