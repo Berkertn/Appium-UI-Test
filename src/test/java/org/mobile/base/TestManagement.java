@@ -10,12 +10,10 @@ import org.mobile.config.TestExecutionConfig;
 import org.mobile.utils.ConfigReader;
 import org.mobile.utils.DevicesConfigReader;
 import org.mobile.utils.TestResultLogger;
-import org.mobile.config.LogConfig;
 
 import static org.mobile.base.DriverManager.getDeviceConfig;
 import static org.mobile.base.DriverManager.parsePlatform;
 import static org.mobile.config.LogConfig.logInfo;
-import static org.mobile.utils.AppiumUtil.isAppRunning;
 import static org.mobile.utils.FileUtil.cleanTestOutputFolder;
 
 @ExtendWith(TestResultLogger.class)
@@ -43,12 +41,6 @@ public class TestManagement extends StepDefinitionBase {
 
     @BeforeEach
     public void setUpTestCase(TestInfo testInfo) {
-        if (!isAppRunning("com.accuweather.android")) {
-            LogConfig.logInfo("App is NOT running. Launching the app...");
-
-        } else {
-            LogConfig.logInfo("App is already running.");
-        }
         logInfo("Starting test: " + testInfo.getDisplayName());
         logInfo("Test running on thread: " + Thread.currentThread().getName());
         driver = DriverManager.getDriver();
