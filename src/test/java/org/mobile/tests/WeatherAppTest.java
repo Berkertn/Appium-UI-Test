@@ -60,7 +60,7 @@ public class WeatherAppTest extends TestManagement {
                 "nightTabButton"
         );
         /// Day tab UI elements and their value check
-        iVerifyToSeeElements(locatorKeysToSee);
+        iVerifyToElements(locatorKeysToSee);
         iVerifyTextInElement("dateHeaderText", hottestDayAsUIFormat);
         iVerifyTextInElement("highestAndLowestTemperatureText", String.valueOf(hottestDate.getTemperature().getMaximum().getValue()));
         iVerifyTextInElement("weatherPhareIcon", hottestDate.getDay().getIconPhrase(), "content-desc");
@@ -68,7 +68,7 @@ public class WeatherAppTest extends TestManagement {
         ///Change the weather day to night tab
         iTapOnElement("nightTabButton");
         /// Night tab UI elements and their value check
-        iVerifyToSeeElements(locatorKeysToSee);
+        iVerifyToElements(locatorKeysToSee);
         iVerifyTextInElement("dateHeaderText", hottestDayAsUIFormat);
         iVerifyTextInElement("highestAndLowestTemperatureText", String.valueOf(hottestDate.getTemperature().getMinimum().getValue()));
         iVerifyTextInElement("weatherPhareIcon", hottestDate.getNight().getIconPhrase(), "content-desc");

@@ -19,7 +19,7 @@ public class WeatherAppConditionTest extends TestManagement {
     void weatherConditionsUIAndAPITest() {
         String city = "New York";
         String key = getLocationKeyFor(city);
-        CurrentCondition currentCondition = getFirstResponseOfCurrentCondition(key);
+        CurrentCondition currentCondition = getFirstResponseOfCurrentConditionAsClassInstance(key);
 
         // UI TESTS
         iSetThePageAsFrom("HomePage", "/");
