@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.mobile.base.TestManagement.objectMapper;
+import static org.mobile.base.TestHooks.objectMapper;
 
 public class RequestSteps {
 

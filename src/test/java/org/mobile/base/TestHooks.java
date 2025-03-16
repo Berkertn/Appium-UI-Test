@@ -17,7 +17,8 @@ import static org.mobile.config.LogConfig.logInfo;
 import static org.mobile.utils.FileUtil.cleanTestOutputFolder;
 
 @ExtendWith(TestResultLogger.class)
-public class TestManagement extends StepDefinitionBase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class TestHooks extends StepDefinitionBase {
 
     protected AppiumDriver driver;
     public static final ObjectMapper objectMapper = new ObjectMapper();
@@ -41,12 +42,6 @@ public class TestManagement extends StepDefinitionBase {
 
     @BeforeEach
     public void setUpTestCase(TestInfo testInfo) {
-      /* if (!isAppRunning("com.accuweather.android")) {
-            LogConfig.logInfo("App is NOT running. Launching the app!");
-        } else {
-            LogConfig.logInfo("App is already running!");
-        }*/
-
         logInfo("\033[34m[Before-Each-Thread-[%s]]-Starting test: [%s]\033[0m".formatted(Thread.currentThread().getName(), testInfo.getDisplayName()));
 
         logInfo("Test running on thread: " + Thread.currentThread().getName());
@@ -61,14 +56,13 @@ public class TestManagement extends StepDefinitionBase {
         logInfo("[After-Each-Thread-[%s]]-Ending test: [%s]".formatted(Thread.currentThread().getName(), testInfo.getDisplayName()));
         //String screenshotPath = ScreenshotUtil.captureScreenshot(testInfo.getDisplayName());
         //TODO driver will exit in TestResultLogger because afterEach run before testFailed trigger
-
-    /*    SS_PATH.set(screenshotPath);
-        logDebug("[After-Each-Thread-[%s]]--Screen shoot captured and saved to: [%s]".formatted(Thread.currentThread().getName(), screenshotPath));
+   /*     ExtentReportManager.endTest();
+        logDebug("[After-Each-Thread-[%s]]--Screen shoot captured and saved".formatted(Thread.currentThread().getName()));
         DeviceManager.releaseDevice();
         logDebug("[After-Each-Thread-[%s]]-Device released in Thread".formatted(Thread.currentThread().getName()));
         DriverManager.quitDriver();
-        logDebug("[After-Each-Thread-[%s]]-Driver quited in Thread".formatted(Thread.currentThread().getName()));*/
-    }
+        logDebug("[After-Each-Thread-[%s]]-Driver quited in Thread".formatted(Thread.currentThread().getName()));
+    */}
 
     @AfterAll
     public static void projectTearDown() {

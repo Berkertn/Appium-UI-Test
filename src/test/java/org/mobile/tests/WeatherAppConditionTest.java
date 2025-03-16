@@ -2,21 +2,22 @@ package org.mobile.tests;
 
 import org.api.models.conditions.CurrentCondition;
 import org.junit.jupiter.api.*;
-import org.mobile.base.TestManagement;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.mobile.base.TestHooks;
 
 import java.util.List;
 
 import static org.api.steps.RequestSteps.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class WeatherAppConditionTest extends TestManagement {
+@Execution(ExecutionMode.CONCURRENT)
+public class WeatherAppConditionTest extends TestHooks {
 
     @Test
-    @Order(1)
     @Tag("condition")
     @Tag("smoke")
-    @DisplayName("Weather Current Conditions For NY UI and API Test")
+    @DisplayName("Weather Current Conditions For NY UI and API Test-2")
     void weatherConditionsUIAndAPITest() {
         String city = "New York";
         String key = getLocationKeyFor(city);
@@ -29,7 +30,11 @@ public class WeatherAppConditionTest extends TestManagement {
         iSetThePageAsFrom("LocationPage", "/");
         iTapOnElement("locationSearchText");
         iWriteIntoElement("locationSearchText", city);
-        iWaitToBeVisible("locationResultFirst");
+        try {
+            iWaitToBeVisible("locationResultFirst");
+        } catch (Exception e) {
+            iTapEnter();
+        }
         iTapOnElement("locationResultFirst");
 
         iSetThePageAsFrom("HomePage", "/");
@@ -55,4 +60,7 @@ public class WeatherAppConditionTest extends TestManagement {
         iGetElement("unitDynamicText", currentCondition.getTemperature().getImperial().getUnit());
     }
 
+    //@Test
+    void test3() {
+    }
 }

@@ -86,10 +86,8 @@ abstract public class StepDefinitionBase {
         elementUtil.sendKeys(element, text);
     }
 
-    public void iTapEnter(String key) {
-        By locator = page.getLocators().getLocator(key, getOSPlatform());
-        WebElement element = elementUtil.getElement(locator);
-        elementUtil.sendEnter(element);
+    public void iTapEnter() {
+        elementUtil.sendEnter(getOSPlatform());
     }
 
     public void iScrollToElement(String key) {

@@ -51,7 +51,6 @@
             <version>${junit.version}</version>
         </dependency>
 
-        <!-- JUnit 5 Engine -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -60,14 +59,14 @@
 
         <dependency>
             <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-suite-api</artifactId>
+            <artifactId>junit-platform-runner</artifactId>
             <version>1.11.4</version>
         </dependency>
 
         <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite-engine</artifactId>
+            <version>1.11.4</version>
         </dependency>
 
         <!-- Lombok -->
@@ -136,6 +135,13 @@
                     <useModulePath>false</useModulePath>
                     <groups>${tag}</groups>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-runner</artifactId>
+                        <version>1.11.4</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

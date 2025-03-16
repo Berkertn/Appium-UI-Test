@@ -16,7 +16,7 @@ public class AppiumServerManager {
 
     private static final Map<Integer, AppiumDriverLocalService> serviceMap = new ConcurrentHashMap<>();
 
-    public static void startServer(DeviceConfig deviceConfig) {
+    public static synchronized void startServer(DeviceConfig deviceConfig) {
         if (serviceMap.containsKey(deviceConfig.getPort())) {
             return;
         }

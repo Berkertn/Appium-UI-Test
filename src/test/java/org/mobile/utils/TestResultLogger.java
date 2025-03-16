@@ -19,21 +19,21 @@ public class TestResultLogger implements TestWatcher {
     public void testSuccessful(ExtensionContext context) {
         logInfo("Test Passed: " + context.getDisplayName());
         ExtentReportManager.getTest().pass("Test Passed: " + context.getDisplayName());
-       // terminateDriver();
+         terminateDriver();
     }
 
     @Override
     public void testFailed(ExtensionContext context, Throwable cause) {
         String testName = context.getDisplayName();
-        logInfo("[Thread-%s][TestResultLogger]-Test Failed: %s - Error: ".formatted(Thread.currentThread().getId(), testName) + cause.getMessage());
-        /*if (SS_PATH != null) {
+        logInfo("[Thread-%s][TestResultLogger]-Test Failed: %s - \nError: ".formatted(Thread.currentThread().getId(), testName) + cause.getMessage());
+      /*  if (SS_PATH != null) {
             ExtentReportManager.getTest().fail("[Thread-%s]-Test Failed: %s - \nError: ".formatted(Thread.currentThread().getId(), context.getDisplayName()) + cause.getMessage(),
                     MediaEntityBuilder.createScreenCaptureFromPath("../../" + SS_PATH).build());
         } else {
             logDebug("No screenshot found for test: [%s]".formatted(context.getDisplayName()));
             ExtentReportManager.getTest().fail("Test Failed: %s - \nError: ".formatted(context.getDisplayName()) + cause.getMessage());
         }*/
-
+        ExtentReportManager.endTest();
         String screenshotPath = ScreenshotUtil.captureScreenshot(context.getDisplayName());
         ExtentReportManager.getTest().fail("[Thread-%s]-Test Failed: %s - \nError: ".formatted(Thread.currentThread().getId(), context.getDisplayName()) + cause.getMessage(),
                 MediaEntityBuilder.createScreenCaptureFromPath("../../" + screenshotPath).build());
@@ -45,14 +45,14 @@ public class TestResultLogger implements TestWatcher {
         logInfo("[Thread-%s]-Test Aborted: %s - Reason: %s"
                 .formatted(Thread.currentThread().getId(), context.getDisplayName(), cause.getMessage()));
         ExtentReportManager.getTest().fail("[Thread-%s]-Test Aborted: %s - Reason: " + cause.getMessage());
-       // terminateDriver();
+        ExtentReportManager.endTest();
     }
 
     @Override
     public void testDisabled(ExtensionContext context, Optional<String> reason) {
         logInfo("[Thread-%s]-Test Disabled: %s - Reason: %s"
                 .formatted(Thread.currentThread().getId(), context.getDisplayName(), reason.orElse("Unknown")));
-        //terminateDriver();
+        ExtentReportManager.endTest();
     }
 
     private void terminateDriver() {

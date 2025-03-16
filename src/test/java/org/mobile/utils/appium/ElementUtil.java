@@ -2,7 +2,11 @@ package org.mobile.utils.appium;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import org.junit.jupiter.api.Assertions;
+import org.mobile.base.DriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -92,9 +96,10 @@ public class ElementUtil {
         logDebug("Typed text:[%s] into element:[%s]".formatted(text, element));
     }
 
-    public void sendEnter(WebElement element) {
-        element.sendKeys(Keys.ENTER);
-        logDebug("Sent ENTER key to element: " + element);
+    public void sendEnter(DriverManager.OS_TYPES os) {
+        if (os.equals(DriverManager.OS_TYPES.android)) {
+            ((AndroidDriver) getDriver()).pressKey(new KeyEvent(AndroidKey.ENTER));
+        }
     }
 
     public void clearAndSendKeys(WebElement element, String text) {
@@ -104,9 +109,14 @@ public class ElementUtil {
     }
 
     public void waitForElementToBeVisible(By elementBy, int timeout) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
-        logDebug("Element became visible: " + elementBy);
+        try {
+            WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
+            logDebug("Element became visible: " + elementBy);
+
+        } catch (TimeoutException e) {
+            throw new RuntimeException("[Thread-%s]Element-[%s] is not visible in timeout: [%s]\n".formatted(Thread.currentThread().getName(), elementBy.toString(), timeout));
+        }
     }
 
     public void waitForElementToDisappear(By elementBy, int timeout) {
