@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.appium.java_client.AppiumDriver;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mobile.commons.StepDefinitionBase;
 import org.mobile.config.ExtentReportManager;
 import org.mobile.config.TestExecutionConfig;
@@ -13,11 +15,13 @@ import org.mobile.utils.TestResultLogger;
 
 import static org.mobile.base.DriverManager.getDeviceConfig;
 import static org.mobile.base.DriverManager.parsePlatform;
+import static org.mobile.config.ExtentReportManager.flushReports;
 import static org.mobile.config.LogConfig.logInfo;
 import static org.mobile.utils.FileUtil.cleanTestOutputFolder;
 
 @ExtendWith(TestResultLogger.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@Execution(ExecutionMode.CONCURRENT)
 public class TestHooks extends StepDefinitionBase {
 
     protected AppiumDriver driver;
@@ -54,20 +58,18 @@ public class TestHooks extends StepDefinitionBase {
     @AfterEach
     public void tearDownTestCase(TestInfo testInfo) {
         logInfo("[After-Each-Thread-[%s]]-Ending test: [%s]".formatted(Thread.currentThread().getName(), testInfo.getDisplayName()));
-        //String screenshotPath = ScreenshotUtil.captureScreenshot(testInfo.getDisplayName());
         //TODO driver will exit in TestResultLogger because afterEach run before testFailed trigger
-   /*     ExtentReportManager.endTest();
-        logDebug("[After-Each-Thread-[%s]]--Screen shoot captured and saved".formatted(Thread.currentThread().getName()));
-        DeviceManager.releaseDevice();
-        logDebug("[After-Each-Thread-[%s]]-Device released in Thread".formatted(Thread.currentThread().getName()));
-        DriverManager.quitDriver();
-        logDebug("[After-Each-Thread-[%s]]-Driver quited in Thread".formatted(Thread.currentThread().getName()));
-    */}
+  }
 
     @AfterAll
     public static void projectTearDown() {
+        if (Thread.currentThread().isInterrupted()) {
+            logInfo("Skipping @AfterAll since the thread is interrupted.");
+            return;
+        }
         logInfo("\033[31mAll tests completed. Stopping all Appium servers...\033[0m");
         DevicesConfigReader.getDeviceConfigs().forEach(AppiumServerManager::stopServer);
         logInfo("\033[31mAll Appium servers have been stopped.\033[0m");
+        flushReports();
     }
 }

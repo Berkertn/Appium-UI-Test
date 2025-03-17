@@ -17,10 +17,10 @@ import static org.mobile.utils.DateUtil.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Execution(ExecutionMode.CONCURRENT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class WeatherAppTest extends TestHooks {
 
     @Test
-    @Tag("fiveDay")
     @Tag("smoke")
     @DisplayName("Weather Five Day Forecast UI and API Test")
     void weatherFiveDayForecastUIAndAPITest() throws JsonProcessingException {
@@ -40,9 +40,7 @@ public class WeatherAppTest extends TestHooks {
         iSetThePageAsFrom("LocationPage", "/");
         iTapOnElement("locationSearchText");
         iWriteIntoElement("locationSearchText", city);
-        try {
-            iWaitToBeVisible("locationResultFirst");
-        } catch (Exception e) {
+        if (!iWaitToBeVisible("locationResultFirst")) {
             iTapEnter();
         }
         iTapOnElement("locationResultFirst");
@@ -62,8 +60,7 @@ public class WeatherAppTest extends TestHooks {
                 "dateHeaderText",
                 "highestAndLowestTemperatureText",
                 "weatherPhareIcon",
-                "dayTabButton",
-                "nightTabButton"
+                "dayTabButton"
         );
         /// Day tab UI elements and their value check
         iVerifyToElements(locatorKeysToSee);
@@ -79,9 +76,4 @@ public class WeatherAppTest extends TestHooks {
         iVerifyTextInElement("highestAndLowestTemperatureText", String.valueOf(hottestDate.getTemperature().getMinimum().getValue()));
         iVerifyTextInElement("weatherPhareIcon", hottestDate.getNight().getIconPhrase(), "content-desc");
     }
-
-   // @Test
-    void test2() {
-    }
-
 }

@@ -69,6 +69,12 @@
             <version>1.11.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -133,15 +139,8 @@
                     </includes>
                     <failIfNoTests>false</failIfNoTests>
                     <useModulePath>false</useModulePath>
-                    <groups>${tag}</groups>
+                    <!--<groups>${tag}</groups>-->
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-runner</artifactId>
-                        <version>1.11.4</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>

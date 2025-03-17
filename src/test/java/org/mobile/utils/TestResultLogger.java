@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.TestWatcher;
 import org.mobile.base.DeviceManager;
 import org.mobile.base.DriverManager;
 import org.mobile.config.ExtentReportManager;
+import org.openqa.selenium.NoSuchSessionException;
 
 import java.util.Optional;
 
@@ -19,24 +20,21 @@ public class TestResultLogger implements TestWatcher {
     public void testSuccessful(ExtensionContext context) {
         logInfo("Test Passed: " + context.getDisplayName());
         ExtentReportManager.getTest().pass("Test Passed: " + context.getDisplayName());
-         terminateDriver();
+        terminateDriver();
     }
 
     @Override
     public void testFailed(ExtensionContext context, Throwable cause) {
         String testName = context.getDisplayName();
         logInfo("[Thread-%s][TestResultLogger]-Test Failed: %s - \nError: ".formatted(Thread.currentThread().getId(), testName) + cause.getMessage());
-      /*  if (SS_PATH != null) {
-            ExtentReportManager.getTest().fail("[Thread-%s]-Test Failed: %s - \nError: ".formatted(Thread.currentThread().getId(), context.getDisplayName()) + cause.getMessage(),
-                    MediaEntityBuilder.createScreenCaptureFromPath("../../" + SS_PATH).build());
-        } else {
-            logDebug("No screenshot found for test: [%s]".formatted(context.getDisplayName()));
-            ExtentReportManager.getTest().fail("Test Failed: %s - \nError: ".formatted(context.getDisplayName()) + cause.getMessage());
-        }*/
-        ExtentReportManager.endTest();
         String screenshotPath = ScreenshotUtil.captureScreenshot(context.getDisplayName());
-        ExtentReportManager.getTest().fail("[Thread-%s]-Test Failed: %s - \nError: ".formatted(Thread.currentThread().getId(), context.getDisplayName()) + cause.getMessage(),
-                MediaEntityBuilder.createScreenCaptureFromPath("../../" + screenshotPath).build());
+        if (screenshotPath == null) {
+            ExtentReportManager.getTest().fail("Test Failed: %s - \nError: ".formatted(context.getDisplayName()) + cause.getMessage());
+        } else {
+            ExtentReportManager.getTest().fail("[TestResultLogger-Thread-%s]-Test Failed: %s - \nError: ".formatted(Thread.currentThread().getId(), context.getDisplayName()) + cause.getMessage(),
+                    MediaEntityBuilder.createScreenCaptureFromPath("../../" + screenshotPath).build());
+
+        }
         terminateDriver();
     }
 
@@ -59,7 +57,11 @@ public class TestResultLogger implements TestWatcher {
         ExtentReportManager.endTest();
         DeviceManager.releaseDevice();
         logDebug("Device released in Thread: [%s]".formatted(Thread.currentThread().getName()));
-        DriverManager.quitDriver();
+        try{
+            DriverManager.quitDriver();
+        }catch (NoSuchSessionException e){
+            logDebug("Driver already quited in Thread: [%s]".formatted(Thread.currentThread().getName()));
+        }
         logDebug("Driver quited in Thread: [%s]".formatted(Thread.currentThread().getName()));
     }
 }

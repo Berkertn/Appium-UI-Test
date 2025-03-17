@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class DailyForecast {
     @JsonProperty("Date")
     private String date;
+    @JsonProperty("EpochDate")
+    private Long epochDate;
     @JsonProperty("Temperature")
     private Temperature temperature;
     @JsonProperty("Day")

@@ -36,7 +36,7 @@ public class ElementUtil {
             logDebug(String.format("Element [%s] has been found in %s seconds", elementBy, timeout));
         } catch (Exception e) {
             logError("Element [%s] could not found in [%s]seconds,\nError: %s".formatted(elementBy, timeout, e.getMessage()));
-            Assertions.fail("Element [%s] could not found in [%s] seconds,\nError: %s".formatted(elementBy, timeout, e.getMessage()));
+            Assertions.fail("\nElement [%s] could not found in [%s] seconds,\nError: %s\n".formatted(elementBy, timeout, e.getMessage()));
         }
         return webElement;
     }
@@ -108,14 +108,14 @@ public class ElementUtil {
         logDebug("Cleared and typed text:[%s] into element:[%s]".formatted(text, element));
     }
 
-    public void waitForElementToBeVisible(By elementBy, int timeout) {
+    public boolean waitForElementToBeVisible(By elementBy, int timeout) {
         try {
             WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
             wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
             logDebug("Element became visible: " + elementBy);
-
+            return true;
         } catch (TimeoutException e) {
-            throw new RuntimeException("[Thread-%s]Element-[%s] is not visible in timeout: [%s]\n".formatted(Thread.currentThread().getName(), elementBy.toString(), timeout));
+           return false;
         }
     }
 

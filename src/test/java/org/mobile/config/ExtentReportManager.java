@@ -7,7 +7,7 @@ import org.mobile.utils.ConfigReader;
 
 public class ExtentReportManager {
     private static final ExtentReports extent = new ExtentReports();
-    private static final ThreadLocal<ExtentTest> test = new ThreadLocal<>();
+    private static final ThreadLocal<ExtentTest> testThreadLocal = new ThreadLocal<>();
     private static boolean isReporterConfigured = false;
 
     private ExtentReportManager() {
@@ -24,16 +24,22 @@ public class ExtentReportManager {
     public static void startTest(String testName) {
         configureReporter();
         ExtentTest extentTest = extent.createTest(testName);
-        test.set(extentTest);
+        testThreadLocal.set(extentTest);
     }
 
     public static ExtentTest getTest() {
-        return test.get();
+        return testThreadLocal.get();
     }
 
     public static void endTest() {
-        extent.flush();
+        ExtentTest test = testThreadLocal.get();
+        if (test != null) {
+            test.info("Ending test: " + test.getModel().getName());
+            testThreadLocal.remove();
+        }
     }
 
+    public static synchronized void flushReports() {
+        extent.flush();
+    }
 }
-

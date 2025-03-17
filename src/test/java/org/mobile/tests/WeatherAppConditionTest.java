@@ -12,12 +12,12 @@ import static org.api.steps.RequestSteps.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Execution(ExecutionMode.CONCURRENT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class WeatherAppConditionTest extends TestHooks {
 
     @Test
-    @Tag("condition")
     @Tag("smoke")
-    @DisplayName("Weather Current Conditions For NY UI and API Test-2")
+    @DisplayName("Weather Current Conditions For NY UI and API Test")
     void weatherConditionsUIAndAPITest() {
         String city = "New York";
         String key = getLocationKeyFor(city);
@@ -30,9 +30,7 @@ public class WeatherAppConditionTest extends TestHooks {
         iSetThePageAsFrom("LocationPage", "/");
         iTapOnElement("locationSearchText");
         iWriteIntoElement("locationSearchText", city);
-        try {
-            iWaitToBeVisible("locationResultFirst");
-        } catch (Exception e) {
+        if (!iWaitToBeVisible("locationResultFirst")) {
             iTapEnter();
         }
         iTapOnElement("locationResultFirst");
@@ -44,6 +42,7 @@ public class WeatherAppConditionTest extends TestHooks {
         iTapOnElement("currentConditionsSeeMoreButton");
 
         iSetThePageAsFrom("CurrentConditionsPage", "/");
+        iWaitToBeVisible("pageHeaderText");
 
         List<String> locators = List.of(
                 "pageHeaderText",
@@ -58,9 +57,5 @@ public class WeatherAppConditionTest extends TestHooks {
         iGetElement("currentTempDynamicText", currentCondition.getTemperature().getImperial().getValue());
         iGetElement("weatherIconPhareDynamicText", currentCondition.getWeatherText());
         iGetElement("unitDynamicText", currentCondition.getTemperature().getImperial().getUnit());
-    }
-
-    //@Test
-    void test3() {
     }
 }

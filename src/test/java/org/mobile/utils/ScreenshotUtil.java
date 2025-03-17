@@ -1,5 +1,6 @@
 package org.mobile.utils;
 
+import org.apache.commons.exec.ExecuteException;
 import org.mobile.base.DriverManager;
 import org.openqa.selenium.OutputType;
 
@@ -11,15 +12,17 @@ import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.mobile.base.ThreadLocalManager.testStartDate;
 import static org.mobile.config.LogConfig.logDebug;
+import static org.mobile.config.LogConfig.logError;
 
 public class ScreenshotUtil {
     private static final String SCREENSHOT_PATH = ConfigReader.get("ssPath");
 
     public static String captureScreenshot(String testName) {
+        testName = testName.replaceAll("\\s+", "_");
         try {
-            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String fileName = SCREENSHOT_PATH + testName + "_" + timestamp + ".png";
+            String fileName = SCREENSHOT_PATH + testName + "_" + testStartDate + ".png";
             File screenshotDir = new File(SCREENSHOT_PATH);
             if (!screenshotDir.exists()) {
                 screenshotDir.mkdirs();
@@ -29,8 +32,9 @@ public class ScreenshotUtil {
             Files.copy(screenshot.toPath(), Paths.get(fileName), StandardCopyOption.REPLACE_EXISTING);
 
             return fileName;
-        } catch (IOException e) {
-            throw new RuntimeException("Error occurred while taking screenshot: \n", e);
+        } catch (Exception e) {
+            logError("!!Screenshot could not be captured, Error: %s\n".formatted(e.getMessage()));
+            return null;
         }
     }
 }
