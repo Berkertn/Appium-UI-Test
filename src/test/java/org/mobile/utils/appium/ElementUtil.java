@@ -2,7 +2,11 @@ package org.mobile.utils.appium;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import org.junit.jupiter.api.Assertions;
+import org.mobile.base.DriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -32,7 +36,7 @@ public class ElementUtil {
             logDebug(String.format("Element [%s] has been found in %s seconds", elementBy, timeout));
         } catch (Exception e) {
             logError("Element [%s] could not found in [%s]seconds,\nError: %s".formatted(elementBy, timeout, e.getMessage()));
-            Assertions.fail("Element [%s] could not found in [%s] seconds,\nError: %s".formatted(elementBy, timeout, e.getMessage()));
+            Assertions.fail("\nElement [%s] could not found in [%s] seconds,\nError: %s\n".formatted(elementBy, timeout, e.getMessage()));
         }
         return webElement;
     }
@@ -92,9 +96,10 @@ public class ElementUtil {
         logDebug("Typed text:[%s] into element:[%s]".formatted(text, element));
     }
 
-    public void sendEnter(WebElement element) {
-        element.sendKeys(Keys.ENTER);
-        logDebug("Sent ENTER key to element: " + element);
+    public void sendEnter(DriverManager.OS_TYPES os) {
+        if (os.equals(DriverManager.OS_TYPES.android)) {
+            ((AndroidDriver) getDriver()).pressKey(new KeyEvent(AndroidKey.ENTER));
+        }
     }
 
     public void clearAndSendKeys(WebElement element, String text) {
@@ -103,10 +108,15 @@ public class ElementUtil {
         logDebug("Cleared and typed text:[%s] into element:[%s]".formatted(text, element));
     }
 
-    public void waitForElementToBeVisible(By elementBy, int timeout) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
-        logDebug("Element became visible: " + elementBy);
+    public boolean waitForElementToBeVisible(By elementBy, int timeout) {
+        try {
+            WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
+            logDebug("Element became visible: " + elementBy);
+            return true;
+        } catch (TimeoutException e) {
+           return false;
+        }
     }
 
     public void waitForElementToDisappear(By elementBy, int timeout) {

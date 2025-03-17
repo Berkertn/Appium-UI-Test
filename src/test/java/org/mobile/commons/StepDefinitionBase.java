@@ -67,7 +67,7 @@ abstract public class StepDefinitionBase {
             locatorString = formatedStringWithArgs(locatorString, args);
             locator = AppiumBy.androidUIAutomator(locatorString);
         } else {
-            throw new IllegalArgumentException("Unsupported locator type: " + locator);
+            Assertions.fail("Unsupported locator type: " + locator);
         }
         return elementUtil.getElement(locator);
     }
@@ -86,10 +86,8 @@ abstract public class StepDefinitionBase {
         elementUtil.sendKeys(element, text);
     }
 
-    public void iTapEnter(String key) {
-        By locator = page.getLocators().getLocator(key, getOSPlatform());
-        WebElement element = elementUtil.getElement(locator);
-        elementUtil.sendEnter(element);
+    public void iTapEnter() {
+        elementUtil.sendEnter(getOSPlatform());
     }
 
     public void iScrollToElement(String key) {
@@ -97,9 +95,9 @@ abstract public class StepDefinitionBase {
         gesturesUtil.scrollToElement(locator);
     }
 
-    public void iWaitToBeVisible(String key) {
+    public boolean iWaitToBeVisible(String key) {
         By locator = page.getLocators().getLocator(key, getOSPlatform());
-        elementUtil.waitForElementToBeVisible(locator, 20);
+        return elementUtil.waitForElementToBeVisible(locator, 20);
     }
 
     public void iVerifyToElement(String key) {
@@ -122,7 +120,7 @@ abstract public class StepDefinitionBase {
             logDebug("Element found: [%s]".formatted(locator));
         } catch (Exception e) {
             logError("Element NOT found: [%s]. Error: %s".formatted(locator, e.getMessage()));
-            softAssert.fail("Element NOT found: [%s]. Error: %s".formatted(locator, e.getMessage()));
+            softAssert.fail("Element NOT found: [%s]. Error: %s\n".formatted(locator, e.getMessage()));
         }
     }
 

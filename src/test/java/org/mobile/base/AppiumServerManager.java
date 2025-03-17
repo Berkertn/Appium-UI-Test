@@ -29,7 +29,7 @@ public class AppiumServerManager {
                     .build();
             service.start();
             serviceMap.put(deviceConfig.getPort(), service);
-            logInfo("\033[32mAppium Server Started on port =[%d]!\033[0m".formatted(deviceConfig.getPort()));
+            logInfo("\033[32m[Thread-%s]Appium Server Started on port =[%d]!\033[0m".formatted(Thread.currentThread().getName(),deviceConfig.getPort()));
         } catch (Exception e) {
             throw new RuntimeException("Appium Server Start Failed!\n\n" + e.getMessage());
         }
@@ -39,7 +39,7 @@ public class AppiumServerManager {
         AppiumDriverLocalService service = serviceMap.get(config.getPort());
         if (service != null) {
             service.stop();
-            logInfo("\033[31mAppium Server Stopped!\033[0m");
+            logInfo("\033[31m[Thread-%s]Appium Server Stopped in port: [%s]!\033[0m".formatted(Thread.currentThread().getName(),config.getPort()));
         }
     }
 }

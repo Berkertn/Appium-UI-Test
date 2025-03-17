@@ -2,21 +2,22 @@ package org.mobile.tests;
 
 import org.api.models.conditions.CurrentCondition;
 import org.junit.jupiter.api.*;
-import org.mobile.base.TestManagement;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.mobile.base.TestHooks;
 
 import java.util.List;
 
 import static org.api.steps.RequestSteps.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Execution(ExecutionMode.CONCURRENT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class WeatherAppConditionTest extends TestManagement {
+public class WeatherAppConditionTest extends TestHooks {
 
     @Test
-    @Order(1)
-    @Tag("conditions")
     @Tag("smoke")
-    @DisplayName("Weather Conditions For NY UI and API Test")
+    @DisplayName("Weather Current Conditions For NY UI and API Test")
     void weatherConditionsUIAndAPITest() {
         String city = "New York";
         String key = getLocationKeyFor(city);
@@ -29,7 +30,9 @@ public class WeatherAppConditionTest extends TestManagement {
         iSetThePageAsFrom("LocationPage", "/");
         iTapOnElement("locationSearchText");
         iWriteIntoElement("locationSearchText", city);
-        iWaitToBeVisible("locationResultFirst");
+        if (!iWaitToBeVisible("locationResultFirst")) {
+            iTapEnter();
+        }
         iTapOnElement("locationResultFirst");
 
         iSetThePageAsFrom("HomePage", "/");
@@ -39,6 +42,7 @@ public class WeatherAppConditionTest extends TestManagement {
         iTapOnElement("currentConditionsSeeMoreButton");
 
         iSetThePageAsFrom("CurrentConditionsPage", "/");
+        iWaitToBeVisible("pageHeaderText");
 
         List<String> locators = List.of(
                 "pageHeaderText",
@@ -54,5 +58,4 @@ public class WeatherAppConditionTest extends TestManagement {
         iGetElement("weatherIconPhareDynamicText", currentCondition.getWeatherText());
         iGetElement("unitDynamicText", currentCondition.getTemperature().getImperial().getUnit());
     }
-
 }

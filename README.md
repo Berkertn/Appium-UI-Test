@@ -270,3 +270,25 @@ docker image prune -f
 docker network prune -f
 ```
 
+### **6. adb doesn't work: adb devices failed to check server version: protocol fault (couldn't read status): Connection reset by peer**
+
+```bash
+adb devices    
+adb: failed to check server version: protocol fault (couldn't read status): Connection reset by peer
+```
+1. check if any result returning from the following command:
+```bash
+lsof -i :5037
+```
+2. If there is any result, kill the process:
+```bash
+kill -9 $(lsof -t -i :5037)
+```
+3. Restart adb:
+```bash
+adb kill-server            
+adb start-server
+adb devices
+``
+4. If the problem persists, restart the machine
+
