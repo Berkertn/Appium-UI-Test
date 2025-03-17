@@ -6,7 +6,7 @@ pipeline {
         choice(name: 'PARALLEL_MODE', choices: ['concurrent', 'same_thread'], description: 'Parallel default mode')
         choice(name: 'PARALLEL_MODE_CLASSES', choices: ['concurrent', 'same_thread'], description: 'Parallel mode based on classes')
         choice(name: 'THREAD_COUNT', choices: ['1', '2', '4', '8'], description: 'Fixed Parallelism Level')
-        string(name: 'TAG', defaultValue: '@wip', description: 'Tag to filter tests')
+        string(name: 'TAG', defaultValue: 'smoke', description: 'Tag to filter tests')
         string(name: 'API_KEY', defaultValue: 'V3zq3UUuHJSevSjL6TqdR40I5RXVdxgA', description: 'API KEY for the AccuWeather API (normally it can stored in gitlab secrets etc)')
         booleanParam(name: 'RUN_LOCAL', defaultValue: 'false', description: 'Are test will run on local or docker (This execution parameter will affect the appium js path and devices will set as config)')
     }
