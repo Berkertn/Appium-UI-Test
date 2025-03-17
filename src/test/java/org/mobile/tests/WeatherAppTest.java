@@ -19,7 +19,8 @@ public class WeatherAppTest extends TestManagement {
 
     @Test
     @Order(1)
-    @Tag("wip")
+    @Tag("fiveDays")
+    @Tag("smoke")
     @DisplayName("Weather Five Day Forecast UI and API Test")
     void weatherFiveDayForecastUIAndAPITest() throws JsonProcessingException {
         String city = "Istanbul";

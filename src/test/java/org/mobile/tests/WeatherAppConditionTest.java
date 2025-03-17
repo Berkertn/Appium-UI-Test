@@ -14,7 +14,8 @@ public class WeatherAppConditionTest extends TestManagement {
 
     @Test
     @Order(1)
-    @Tag("wip")
+    @Tag("conditions")
+    @Tag("smoke")
     @DisplayName("Weather Conditions For NY UI and API Test")
     void weatherConditionsUIAndAPITest() {
         String city = "New York";
