@@ -34,7 +34,7 @@ public class ExtentReportManager {
     public static void endTest() {
         ExtentTest test = testThreadLocal.get();
         if (test != null) {
-            test.info("Ending test: " + test.getModel().getName());
+            test.info("[Thread-%s]Ending test: %s".formatted(Thread.currentThread().getName(), test.getModel().getName()));
             testThreadLocal.remove();
         }
     }

@@ -23,8 +23,8 @@ abstract public class StepDefinitionBase {
     private final ElementUtil elementUtil = new ElementUtil();
     private final GesturesUtil gesturesUtil = new GesturesUtil();
 
-    public void iSetThePageAsFrom(String pageName, String path) {
-        PageManager.setPageInstance(pageName, path);
+    public void iSetThePageAsFrom(String pageName) {
+        PageManager.setPageInstance(pageName);
         page = getCurrentPageTL();
     }
 
