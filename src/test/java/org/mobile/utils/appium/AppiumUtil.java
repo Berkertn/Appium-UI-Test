@@ -1,4 +1,4 @@
-package org.mobile.utils;
+package org.mobile.utils.appium;
 
 import com.google.common.collect.ImmutableMap;
 import org.mobile.base.DriverManager;

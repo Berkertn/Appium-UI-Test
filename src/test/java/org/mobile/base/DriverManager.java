@@ -27,7 +27,7 @@ public class DriverManager {
 
     public static AppiumDriver getDriver() {
         if (driverTL.get() == null) {
-            logInfo("Creating new driver instance...");
+            logInfo("[Thread:%s]- Creating new driver instance".formatted(Thread.currentThread().getName()));
             setupDriver();
         }
         return driverTL.get();
@@ -40,7 +40,7 @@ public class DriverManager {
             throw new RuntimeException("No available device found for test execution!");
         }
 
-        logDebug("Using device: [%s], Port: [%d]".formatted(deviceConfig.getDeviceName(), deviceConfig.getPort()));
+        logDebug("For Driver using device config: Name: [%s], Id: [%s], Port: [%d]".formatted(deviceConfig.getDeviceName(), deviceConfig.getDeviceUDID(), deviceConfig.getPort()));
 
         DesiredCapabilities capabilities = getCapabilities(deviceConfig);
         logInfo("Setup driver: Initializing driver for device [%s] on port [%d]".formatted(deviceConfig.getDeviceName(), deviceConfig.getPort()));

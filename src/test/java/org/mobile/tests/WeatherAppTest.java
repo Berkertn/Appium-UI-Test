@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.api.models.forecast.fiveDaily.DailyForecastResponse;
 import org.api.models.forecast.fiveDaily.DailyForecast;
 import org.junit.jupiter.api.*;
-import org.mobile.base.TestManagement;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.mobile.base.TestHooks;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -14,12 +16,12 @@ import static org.mobile.config.LogConfig.logDebug;
 import static org.mobile.utils.DateUtil.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Execution(ExecutionMode.CONCURRENT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class WeatherAppTest extends TestManagement {
+public class WeatherAppTest extends TestHooks {
 
     @Test
-    @Order(1)
-    @Tag("wip")
+    @Tag("smoke")
     @DisplayName("Weather Five Day Forecast UI and API Test")
     void weatherFiveDayForecastUIAndAPITest() throws JsonProcessingException {
         String city = "Istanbul";
@@ -38,10 +40,11 @@ public class WeatherAppTest extends TestManagement {
         iSetThePageAsFrom("LocationPage");
         iTapOnElement("locationSearchText");
         iWriteIntoElement("locationSearchText", city);
-        iWaitToBeVisible("locationResultFirst");
+        if (!iWaitToBeVisible("locationResultFirst")) {
+            iTapEnter();
+        }
         iTapOnElement("locationResultFirst");
-        Assertions.fail("wefsfsdf");
-        iSetThePageAsFrom("HomePage");
+        iSetThePageAsFrom("HomePage", "/");
         iTapOnElement("dailyForecastButton");
 
         List<WebElement> elements = iGetElements("dayTexts");
@@ -57,11 +60,10 @@ public class WeatherAppTest extends TestManagement {
                 "dateHeaderText",
                 "highestAndLowestTemperatureText",
                 "weatherPhareIcon",
-                "dayTabButton",
-                "nightTabButton"
+                "dayTabButton"
         );
         /// Day tab UI elements and their value check
-        iVerifyToSeeElements(locatorKeysToSee);
+        iVerifyToElements(locatorKeysToSee);
         iVerifyTextInElement("dateHeaderText", hottestDayAsUIFormat);
         iVerifyTextInElement("highestAndLowestTemperatureText", String.valueOf(hottestDate.getTemperature().getMaximum().getValue()));
         iVerifyTextInElement("weatherPhareIcon", hottestDate.getDay().getIconPhrase(), "content-desc");
@@ -69,10 +71,9 @@ public class WeatherAppTest extends TestManagement {
         ///Change the weather day to night tab
         iTapOnElement("nightTabButton");
         /// Night tab UI elements and their value check
-        iVerifyToSeeElements(locatorKeysToSee);
+        iVerifyToElements(locatorKeysToSee);
         iVerifyTextInElement("dateHeaderText", hottestDayAsUIFormat);
         iVerifyTextInElement("highestAndLowestTemperatureText", String.valueOf(hottestDate.getTemperature().getMinimum().getValue()));
         iVerifyTextInElement("weatherPhareIcon", hottestDate.getNight().getIconPhrase(), "content-desc");
     }
-
 }

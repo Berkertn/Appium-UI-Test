@@ -5,7 +5,6 @@ import org.mobile.base.DriverManager;
 import org.openqa.selenium.By;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LocatorMap {
@@ -30,7 +29,7 @@ public class LocatorMap {
     public By getLocator(String key, DriverManager.OS_TYPES platform) {
         Map<String, By> platformLocators = locatorMap.get(key);
         if (platformLocators == null || !platformLocators.containsKey(platform.toString())) {
-            throw new RuntimeException("Locator not found in Page Class instance for: " + platformLocators + " on platform: " + platform);
+            throw new RuntimeException("Locator not found in Page Class instance for: " + key + " on platform: " + platform);
         }
         return platformLocators.get(platform.toString());
     }

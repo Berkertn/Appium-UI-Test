@@ -1,18 +1,16 @@
 FROM --platform=linux/amd64 openjdk:17-buster
 
-# System update and install required tools
+# System needs
 RUN apt-get update && apt-get install -y \
     curl unzip zip wget git
 
-# En son Android SDK platform-tools'u indir ve yükle
+# sdk platfroms etc
 RUN curl -o platform-tools.zip https://dl.google.com/android/repository/platform-tools-latest-linux.zip && \
     unzip platform-tools.zip -d /opt/android-sdk-linux/ && \
     rm platform-tools.zip && \
     chmod +x /opt/android-sdk-linux/platform-tools/adb
 
-# Güncellenmiş `adb`'yi PATH'e ekle
 ENV PATH="/opt/android-sdk-linux/platform-tools:$PATH"
-
 
 # Install Maven
 RUN wget https://archive.apache.org/dist/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz && \

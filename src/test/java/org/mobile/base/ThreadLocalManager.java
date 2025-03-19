@@ -4,15 +4,19 @@ import io.appium.java_client.AppiumDriver;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class ThreadLocalManager {
 
-    public static Boolean RUN_ON_LOCAL = Boolean.valueOf(System.getProperty("runOnLocal", "false"));
+    public static final boolean RUN_ON_LOCAL = Boolean.parseBoolean(System.getProperty("runOnLocal", "false"));
     @Getter
     @Setter
     public static Boolean isParallelEnabled = false;
     public static ThreadLocal<AppiumDriver> driverTL = new ThreadLocal<>();
     protected static ThreadLocal<BasePage> currentPageTL = new ThreadLocal<>();
     protected static ThreadLocal<DriverManager.OS_TYPES> osPlatformTL = new ThreadLocal<>();
+    public static String testStartDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
     public static DriverManager.OS_TYPES getOSPlatform() {
         return osPlatformTL.get();

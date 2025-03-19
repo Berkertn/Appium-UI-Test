@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Locale;
@@ -14,15 +15,17 @@ import java.util.Objects;
 public class DateUtil {
 
     public static DailyForecast findHottestDate(DailyForecastResponse dailyForecastResponse) {
-        DailyForecast hottestForecast = dailyForecastResponse.getDailyForecasts().stream()
-                .filter(Objects::nonNull)
-                .max(Comparator.comparingDouble(d -> d.getTemperature().getMaximum().getValue()))
-                .orElse(null);
-        if (hottestForecast == null) {
-            Assertions.fail("No hottest date found in the forecast response, forecast as day list: " + dailyForecastResponse);
+        // Today included in the epoch
+        long todayEpochStart = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
 
-        }
-        return hottestForecast;
+        return dailyForecastResponse.getDailyForecasts().stream()
+                .filter(Objects::nonNull)
+                .filter(dailyForecast -> dailyForecast.getEpochDate() >= todayEpochStart)
+                .max(Comparator.comparingDouble(dailyForecast -> dailyForecast.getTemperature().getMaximum().getValue()))
+                .orElseGet(() -> {
+                    Assertions.fail("No hottest date found in the forecast response (Today included). Daily Forecasts to analyze: " + dailyForecastResponse);
+                    return null;
+                });
     }
 
     public static String convertDateToUIFormat(LocalDate date) {
@@ -31,8 +34,8 @@ public class DateUtil {
     }
 
     public static LocalDate convertDateToLocalDate(String date) {
-        OffsetDateTime dateTime = OffsetDateTime.parse("2025-03-16T10:15:30+00:00");
-       return dateTime.toLocalDate();
+        OffsetDateTime dateTime = OffsetDateTime.parse(date);
+        return dateTime.toLocalDate();
     }
 
     public static String convertDateToGivenFormat(LocalDate date, DateTimeFormatter format) {

@@ -7,22 +7,18 @@ import static org.mobile.config.LogConfig.logInfo;
 public class TestExecutionConfig {
 
     static {
-        System.setProperty("junit.jupiter.execution.parallel.enabled", "false");
-        String parallelEnabled = System.getProperty("junit.jupiter.execution.parallel.enabled");
+        String parallelEnabled = System.getProperty("junit.jupiter.execution.parallel.enabled", "true");
 
         if (Boolean.parseBoolean(parallelEnabled)) {
             ThreadLocalManager.setIsParallelEnabled(true);
-        } else {
-            System.setProperty("junit.jupiter.execution.parallel.config.fixed.parallelism", "1");
-
         }
     }
 
     public static void initialize() {
-        logInfo("Parallel Enabled: " + System.getProperty("junit.jupiter.execution.parallel.enabled"));
-        logInfo("Parallel Mode Default: " + System.getProperty("junit.jupiter.execution.parallel.mode.default"));
-        logInfo("Parallel Mode Classes: " + System.getProperty("junit.jupiter.execution.parallel.mode.classes.default"));
-        logInfo("Parallelism Level: " + System.getProperty("junit.jupiter.execution.parallel.config.fixed.parallelism"));
+        logInfo("TestExecutionConfig is set from junit-platform.properties file");
+        logInfo("Parallel Enabled: " + System.getProperty("junit.jupiter.execution.parallel.enabled", "true"));
+        logInfo("Parallel Mode Default: " + System.getProperty("junit.jupiter.execution.parallel.mode.default", "concurrent"));
+        logInfo("Parallel Mode Classes: " + System.getProperty("junit.jupiter.execution.parallel.mode.classes.default", "concurrent"));
+        logInfo("Parallelism Level: " + System.getProperty("junit.jupiter.execution.parallel.config.fixed.parallelism", "2"));
     }
 }
-
