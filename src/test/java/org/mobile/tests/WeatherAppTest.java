@@ -44,7 +44,7 @@ public class WeatherAppTest extends TestHooks {
             iTapEnter();
         }
         iTapOnElement("locationResultFirst");
-        iSetThePageAsFrom("HomePage", "/");
+        iSetThePageAsFrom("HomePage");
         iTapOnElement("dailyForecastButton");
 
         List<WebElement> elements = iGetElements("dayTexts");

@@ -24,10 +24,10 @@ public class WeatherAppConditionTest extends TestHooks {
         CurrentCondition currentCondition = getFirstResponseOfCurrentConditionAsClassInstance(key);
 
         // UI TESTS
-        iSetThePageAsFrom("HomePage", "/");
+        iSetThePageAsFrom("HomePage");
         iTapOnElement("locationButton");
         //city search
-        iSetThePageAsFrom("LocationPage", "/");
+        iSetThePageAsFrom("LocationPage");
         iTapOnElement("locationSearchText");
         iWriteIntoElement("locationSearchText", city);
         if (!iWaitToBeVisible("locationResultFirst")) {
@@ -35,13 +35,13 @@ public class WeatherAppConditionTest extends TestHooks {
         }
         iTapOnElement("locationResultFirst");
 
-        iSetThePageAsFrom("HomePage", "/");
+        iSetThePageAsFrom("HomePage");
         iScrollToElement("currentConditionsTempText");
         iVerifyToElement("currentConditionsTempText");
         iVerifyToElement("currentConditionsSeeMoreButton");
         iTapOnElement("currentConditionsSeeMoreButton");
 
-        iSetThePageAsFrom("CurrentConditionsPage", "/");
+        iSetThePageAsFrom("CurrentConditionsPage");
         iWaitToBeVisible("pageHeaderText");
 
         List<String> locators = List.of(
