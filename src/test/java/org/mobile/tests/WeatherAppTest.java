@@ -34,17 +34,17 @@ public class WeatherAppTest extends TestHooks {
         logDebug("Hottest date found as: " + hottestDay);
 
         // UI TESTS
-        iSetThePageAsFrom("HomePage", "/");
+        iSetThePageAsFrom("HomePage");
         iTapOnElement("locationButton");
 
-        iSetThePageAsFrom("LocationPage", "/");
+        iSetThePageAsFrom("LocationPage");
         iTapOnElement("locationSearchText");
         iWriteIntoElement("locationSearchText", city);
         if (!iWaitToBeVisible("locationResultFirst")) {
             iTapEnter();
         }
         iTapOnElement("locationResultFirst");
-        iSetThePageAsFrom("HomePage", "/");
+        iSetThePageAsFrom("HomePage");
         iTapOnElement("dailyForecastButton");
 
         List<WebElement> elements = iGetElements("dayTexts");
@@ -55,7 +55,7 @@ public class WeatherAppTest extends TestHooks {
                 break;
             }
         }
-        iSetThePageAsFrom("ForecastDayDetailPage", "/");
+        iSetThePageAsFrom("ForecastDayDetailPage");
         List<String> locatorKeysToSee = List.of(
                 "dateHeaderText",
                 "highestAndLowestTemperatureText",

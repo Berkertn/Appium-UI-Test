@@ -18,6 +18,8 @@ import static org.mobile.base.DriverManager.parsePlatform;
 import static org.mobile.config.ExtentReportManager.flushReports;
 import static org.mobile.config.LogConfig.logInfo;
 import static org.mobile.utils.FileUtil.cleanTestOutputFolder;
+import static org.mobile.pages.PageMapper.mapPages;
+
 
 @ExtendWith(TestResultLogger.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
@@ -29,6 +31,8 @@ public class TestHooks extends StepDefinitionBase {
 
     @BeforeAll
     public static void projectSetUp() {
+        logInfo("\033[32m[Before-All-Thread-[%s]]-Page Mapping Started:\033[0m\n".formatted(Thread.currentThread().getName()));
+        mapPages();
         cleanTestOutputFolder();
         logInfo("\033[32m[Before-All-Thread-[%s]]-Configs setting:\033[0m\n".formatted(Thread.currentThread().getName()));
         TestExecutionConfig.initialize();
